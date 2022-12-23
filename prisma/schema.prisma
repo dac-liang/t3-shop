@@ -52,9 +52,11 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  address       String?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Order         Order[]
 }
 
 model VerificationToken {
@@ -63,4 +65,69 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Product {
+  id                   String                 @id @default(cuid())
+  name                 String
+  description          String?
+  productDetail        ProductDetail[]
+  productImage         ProductImage[]
+  orderDetail          OrderDetail[]
+  categoriesOnProducts CategoriesOnProducts[]
+}
+
+model ProductDetail {
+  id        String   @id @default(cuid())
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String
+  price     Int
+  volume    Int
+  unit      String
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+}
+
+model Category {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  categoriesOnProducts CategoriesOnProducts[]
+}
+
+model CategoriesOnProducts {
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  @@id([productId, categoryId])
+}
+
+model Order {
+  id        String    @id @default(cuid())
+  status    String
+  user      User      @relation(fields: [userId], references: [id])
+  total     Decimal
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+  userId    String
+}
+
+model OrderDetail {
+  id          String    @id @default(cuid())
+  status      String
+  product     Product   @relation(fields: [productId], references: [id])
+  productName String
+  price       Int
+  amount      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  productId   String
 }
