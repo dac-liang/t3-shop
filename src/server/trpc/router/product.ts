@@ -12,15 +12,7 @@ export const productRouter = router({
             url: true,
           },
         },
-        categoriesOnProducts: {
-          select: {
-            category: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+        category: true,
       },
     });
   }),
@@ -29,31 +21,24 @@ export const productRouter = router({
     .query(({ input, ctx }) => {
       return ctx.prisma.product.findUnique({
         where: {
-          id: input.id,
+          id: Number(input.id),
         },
         include: {
-          categoriesOnProducts: {
-            select: {
-              category: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
+          category: true,
           productImage: {
             select: {
               url: true,
             },
           },
+          productDetail: {
+            select: {
+              id: true,
+              price: true,
+              volume: true,
+              unit: true,
+            },
+          },
         },
       });
     }),
-  // addProduct: publicProcedure.query(({ ctx }) => {
-  //   return ctx.prisma.product.upsert({
-  //     where: { id: "1" },
-  //     create: { id: "1", name: "test" },
-  //     update: { id: "1", name: "test-update" },
-  //   });
-  // }),
 });

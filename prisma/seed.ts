@@ -1,12 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
-import { addCategory, addProduct } from "./seeds";
+import {
+  addCategory,
+  addProduct,
+  addOrderStatus,
+  addOrderDetailStatus,
+} from "./seeds";
 
 const prisma = new PrismaClient();
 
 async function main() {
   await addCategory();
   await addProduct();
+  await addOrderStatus();
+  await addOrderDetailStatus();
 }
 
 main()

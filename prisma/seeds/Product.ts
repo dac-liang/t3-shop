@@ -5,22 +5,25 @@ const createProduct: Prisma.ProductUncheckedCreateInput[] = [
   {
     name: "ホエイプロテイン",
     productDetail: {
-      create: {
-        price: 3000,
-        volume: 250,
-        unit: "g",
-      },
+      create: [
+        {
+          price: 3000,
+          volume: 250,
+          unit: "g",
+        },
+        {
+          price: 5800,
+          volume: 500,
+          unit: "g",
+        },
+      ],
     },
     productImage: {
       create: {
         url: "/images/420x260.png",
       },
     },
-    categoriesOnProducts: {
-      create: {
-        categoryId: 1,
-      },
-    },
+    categoryId: 1,
   },
   {
     name: "ソイプロテイン",
@@ -36,11 +39,7 @@ const createProduct: Prisma.ProductUncheckedCreateInput[] = [
         url: "/images/420x260.png",
       },
     },
-    categoriesOnProducts: {
-      create: {
-        categoryId: 1,
-      },
-    },
+    categoryId: 1,
   },
   {
     name: "ダイエットプロテイン",
@@ -56,11 +55,115 @@ const createProduct: Prisma.ProductUncheckedCreateInput[] = [
         url: "/images/420x260.png",
       },
     },
-    categoriesOnProducts: {
+    categoryId: 1,
+  },
+  {
+    name: "コラーゲングミ",
+    productDetail: {
       create: {
-        categoryId: 1,
+        price: 500,
+        volume: 100,
+        unit: "粒",
       },
     },
+    productImage: {
+      create: {
+        url: "/images/420x260.png",
+      },
+    },
+    categoryId: 3,
+  },
+  {
+    name: "プロテインバー(バナナ)",
+    productDetail: {
+      create: [
+        {
+          price: 150,
+          volume: 1,
+          unit: "本",
+        },
+        {
+          price: 1600,
+          volume: 12,
+          unit: "本",
+        },
+      ],
+    },
+    productImage: {
+      create: {
+        url: "/images/420x260.png",
+      },
+    },
+    categoryId: 3,
+  },
+  {
+    name: "プロテインバー(チョコレート)",
+    productDetail: {
+      create: [
+        {
+          price: 150,
+          volume: 1,
+          unit: "本",
+        },
+        {
+          price: 1600,
+          volume: 12,
+          unit: "本",
+        },
+      ],
+    },
+    productImage: {
+      create: {
+        url: "/images/420x260.png",
+      },
+    },
+    categoryId: 3,
+  },
+  {
+    name: "プロテインバー(抹茶)",
+    productDetail: {
+      create: [
+        {
+          price: 150,
+          volume: 1,
+          unit: "本",
+        },
+        {
+          price: 1600,
+          volume: 12,
+          unit: "本",
+        },
+      ],
+    },
+    productImage: {
+      create: {
+        url: "/images/420x260.png",
+      },
+    },
+    categoryId: 3,
+  },
+  {
+    name: "プロテインバー(バニラ)",
+    productDetail: {
+      create: [
+        {
+          price: 150,
+          volume: 1,
+          unit: "本",
+        },
+        {
+          price: 1600,
+          volume: 12,
+          unit: "本",
+        },
+      ],
+    },
+    productImage: {
+      create: {
+        url: "/images/420x260.png",
+      },
+    },
+    categoryId: 3,
   },
 ];
 

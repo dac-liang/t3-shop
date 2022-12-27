@@ -10,6 +10,10 @@ const createCategories: Prisma.CategoryUncheckedCreateInput[] = [
     id: 2,
     name: "サプリ",
   },
+  {
+    id: 3,
+    name: "おやつ",
+  },
 ];
 
 const addCategory = async () => {

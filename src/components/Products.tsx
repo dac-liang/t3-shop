@@ -1,9 +1,10 @@
-import React from "react";
+import type { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { trpc } from "@utils/trpc";
+import { formatCurrency } from "@utils/helpers";
 
-const Products: React.FC = () => {
+const Products: FC = () => {
   const { data: productsData } = trpc.product.findAll.useQuery();
 
   return (
@@ -28,12 +29,19 @@ const Products: React.FC = () => {
                 </Link>
                 <div className="mt-4">
                   <h3 className="title-font mb-1 text-xs tracking-widest text-gray-500">
-                    {product.categoriesOnProducts[0]?.category.name}
+                    {product.category.name}
                   </h3>
                   <h2 className="title-font text-lg font-medium text-gray-900">
                     {product.name}
                   </h2>
-                  <p className="mt-1">{product.productDetail[0]?.price}</p>
+                </div>
+                <div className="mx-auto flex flex-wrap">
+                  {product.productDetail[0] && (
+                    <>
+                      <p>{formatCurrency(product.productDetail[0].price)}/</p>
+                      <p>{`${product.productDetail[0].volume}${product.productDetail[0].unit}~`}</p>
+                    </>
+                  )}
                 </div>
               </div>
             ))}

@@ -68,66 +68,77 @@ model VerificationToken {
 }
 
 model Product {
-  id                   String                 @id @default(cuid())
-  name                 String
-  description          String?
-  productDetail        ProductDetail[]
-  productImage         ProductImage[]
-  orderDetail          OrderDetail[]
-  categoriesOnProducts CategoriesOnProducts[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  productDetail ProductDetail[]
+  productImage  ProductImage[]
+  category      Category        @relation(fields: [categoryId], references: [id])
+  categoryId    Int
 }
 
 model ProductDetail {
-  id        String   @id @default(cuid())
-  product   Product? @relation(fields: [productId], references: [id])
-  productId String
-  price     Int
-  volume    Int
-  unit      String
+  id          Int           @id @default(autoincrement())
+  product     Product?      @relation(fields: [productId], references: [id])
+  productId   Int
+  price       Int
+  volume      Int
+  unit        String
+  OrderDetail OrderDetail[]
 }
 
 model ProductImage {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   url       String
   product   Product? @relation(fields: [productId], references: [id])
-  productId String?
+  productId Int?
 }
 
 model Category {
-  id                   Int                    @id @default(autoincrement())
-  name                 String
-  categoriesOnProducts CategoriesOnProducts[]
+  id      Int       @id @default(autoincrement())
+  name    String
+  Product Product[]
 }
 
-model CategoriesOnProducts {
-  product    Product  @relation(fields: [productId], references: [id])
-  productId  String
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int
+model OrderStatus {
+  id       String  @unique
+  name     String
+  sequence Int
+  Order    Order[]
+}
 
-  @@id([productId, categoryId])
+model OrderDetailStatus {
+  id          String        @unique
+  name        String
+  sequence    Int
+  OrderDetail OrderDetail[]
 }
 
 model Order {
-  id        String    @id @default(cuid())
-  status    String
-  user      User      @relation(fields: [userId], references: [id])
-  total     Decimal
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
-  userId    String
+  id          String        @id @default(cuid())
+  status      OrderStatus   @relation(fields: [statusId], references: [id])
+  statusId    String
+  user        User          @relation(fields: [userId], references: [id])
+  total       Decimal
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  deletedAt   DateTime?
+  userId      String
+  OrderDetail OrderDetail[]
 }
 
 model OrderDetail {
-  id          String    @id @default(cuid())
-  status      String
-  product     Product   @relation(fields: [productId], references: [id])
-  productName String
-  price       Int
-  amount      Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-  deletedAt   DateTime?
-  productId   String
+  id              String            @id @default(cuid())
+  order           Order             @relation(fields: [orderId], references: [id])
+  orderId         String
+  status          OrderDetailStatus @relation(fields: [statusId], references: [id])
+  statusId        String
+  productName     String
+  price           Int
+  quantity        Int
+  productDetail   ProductDetail     @relation(fields: [productDetailId], references: [id])
+  productDetailId Int
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?         @updatedAt
+  deletedAt       DateTime?
 }

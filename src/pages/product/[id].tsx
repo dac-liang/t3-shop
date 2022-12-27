@@ -1,15 +1,42 @@
+import { useEffect, useRef, useState } from "react";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { trpc } from "@utils/trpc";
 import { BaseLayout } from "@components";
-import type { NextPage } from "next";
+import { useShoppingCart } from "@context/CartContext";
+import { trpc } from "@utils/trpc";
+import { formatCurrency } from "@utils/helpers";
 
 const Product: NextPage = () => {
-  const { query } = useRouter();
+  const router = useRouter();
   const { data: product } = trpc.product.findOne.useQuery({
-    id: query.id as string,
+    id: router.query.id as string,
   });
+
+  const { increase } = useShoppingCart();
+
+  const [price, setPrice] = useState<number | null>(null);
+  const [detailId, setDetailId] = useState<number | null>(null);
+  const selectEl = useRef(null);
+  const handleOnChange = (e: { target: { value: string } }) => {
+    if (product) {
+      const target = product.productDetail.find(
+        (spec) => spec.id === Number(e.target.value)
+      );
+      setPrice(target?.price ?? null);
+      setDetailId(target?.id ?? null);
+    }
+  };
+
+  useEffect(() => {
+    if (product) {
+      const target = product.productDetail.find((detail) => detail !== null);
+      setPrice(target?.price ?? null);
+      setDetailId(target?.id ?? null);
+    }
+  }, [product]);
+
   if (!product) return null;
 
   return (
@@ -32,7 +59,7 @@ const Product: NextPage = () => {
               />
               <div className="mt-6 w-full lg:mt-0 lg:w-1/2 lg:py-6 lg:pl-10">
                 <h2 className="title-font text-sm tracking-widest text-gray-500">
-                  {product.categoriesOnProducts[0]?.category.name}
+                  {product.category.name}
                 </h2>
                 <h1 className="title-font mb-1 text-3xl font-medium text-gray-900">
                   {product.name}
@@ -79,20 +106,21 @@ const Product: NextPage = () => {
                 </div>
                 <p className="leading-relaxed">{product.description}</p>
                 <div className="mt-6 mb-5 flex items-center border-b-2 border-gray-100 pb-5">
-                  <div className="flex">
-                    <span className="mr-3">Color</span>
-                    <button className="h-6 w-6 rounded-full border-2 border-gray-300 focus:outline-none"></button>
-                    <button className="ml-1 h-6 w-6 rounded-full border-2 border-gray-300 bg-gray-700 focus:outline-none"></button>
-                    <button className="ml-1 h-6 w-6 rounded-full border-2 border-gray-300 bg-yellow-500 focus:outline-none"></button>
-                  </div>
-                  <div className="ml-6 flex items-center">
-                    <span className="mr-3">Size</span>
+                  <div className="flex items-center">
                     <div className="relative">
-                      <select className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-200">
-                        <option>SM</option>
-                        <option>M</option>
-                        <option>L</option>
-                        <option>XL</option>
+                      <select
+                        ref={selectEl}
+                        onChange={handleOnChange}
+                        className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-200"
+                      >
+                        {product.productDetail &&
+                          product.productDetail.length > 0 &&
+                          product.productDetail.map((detail, index) => (
+                            <option
+                              key={index}
+                              value={detail.id}
+                            >{`${detail.volume} ${detail.unit}`}</option>
+                          ))}
                       </select>
                       <span className="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
                         <svg
@@ -111,10 +139,25 @@ const Product: NextPage = () => {
                   </div>
                 </div>
                 <div className="flex">
-                  <span className="title-font text-2xl font-medium text-gray-900">
-                    $58.00
-                  </span>
-                  <button className="ml-auto flex rounded border-0 bg-yellow-500 py-2 px-6 text-white hover:bg-yellow-600 focus:outline-none">
+                  {price && (
+                    <span className="title-font text-2xl font-medium text-gray-900">
+                      {formatCurrency(price)}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => {
+                      if (detailId !== null && price !== null) {
+                        increase({
+                          ...product,
+                          quantity: 1,
+                          price,
+                          id: detailId,
+                        });
+                        router.push("/cart");
+                      }
+                    }}
+                    className="ml-auto flex rounded border-0 bg-yellow-500 py-2 px-6 text-white hover:bg-yellow-600 focus:outline-none"
+                  >
                     購入
                   </button>
                 </div>
