@@ -52,9 +52,11 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  address       String?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Order         Order[]
 }
 
 model VerificationToken {
@@ -63,4 +65,80 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Product {
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  productDetail ProductDetail[]
+  productImage  ProductImage[]
+  category      Category        @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+}
+
+model ProductDetail {
+  id          Int           @id @default(autoincrement())
+  product     Product?      @relation(fields: [productId], references: [id])
+  productId   Int
+  price       Int
+  volume      Int
+  unit        String
+  OrderDetail OrderDetail[]
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+}
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Product Product[]
+}
+
+model OrderStatus {
+  id       String  @unique
+  name     String
+  sequence Int
+  Order    Order[]
+}
+
+model OrderDetailStatus {
+  id          String        @unique
+  name        String
+  sequence    Int
+  OrderDetail OrderDetail[]
+}
+
+model Order {
+  id          String        @id @default(cuid())
+  status      OrderStatus   @relation(fields: [statusId], references: [id])
+  statusId    String
+  user        User          @relation(fields: [userId], references: [id])
+  total       Decimal
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  deletedAt   DateTime?
+  userId      String
+  OrderDetail OrderDetail[]
+}
+
+model OrderDetail {
+  id              String            @id @default(cuid())
+  order           Order             @relation(fields: [orderId], references: [id])
+  orderId         String
+  status          OrderDetailStatus @relation(fields: [statusId], references: [id])
+  statusId        String
+  productName     String
+  price           Int
+  quantity        Int
+  productDetail   ProductDetail     @relation(fields: [productDetailId], references: [id])
+  productDetailId Int
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?         @updatedAt
+  deletedAt       DateTime?
 }
