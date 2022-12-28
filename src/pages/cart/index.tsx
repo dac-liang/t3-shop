@@ -13,6 +13,7 @@ const Cart: NextPage = () => {
     getItemQuantity,
     decrease,
     increase,
+    removeAllFromCart,
     cartItems,
     cartQuantity,
     cartSum,
@@ -20,11 +21,14 @@ const Cart: NextPage = () => {
   const shippingFee = 500;
   const mutation = trpc.auth.createOrder.useMutation();
   const handleOrder = async () => {
-    mutation.mutate({
-      cartItems: cartItems,
-      cartSum: cartSum,
-      shippingFee: shippingFee,
-    });
+    mutation.mutate(
+      {
+        cartItems: cartItems,
+        cartSum: cartSum,
+        shippingFee: shippingFee,
+      },
+      { onSuccess: () => removeAllFromCart() }
+    );
   };
 
   return (
@@ -169,9 +173,9 @@ const Cart: NextPage = () => {
                   <span>{formatCurrency(cartSum + shippingFee)}</span>
                 </div>
                 <button
-                  className="w-full bg-indigo-500 py-3 text-sm font-semibold uppercase text-white hover:bg-indigo-600"
+                  className="w-full bg-indigo-500 py-3 text-sm font-semibold uppercase text-white hover:bg-indigo-600 disabled:opacity-25"
                   onClick={handleOrder}
-                  disabled={mutation.isLoading}
+                  disabled={cartQuantity < 1 || mutation.isLoading}
                 >
                   決済
                 </button>

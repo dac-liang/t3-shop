@@ -20,6 +20,7 @@ type ShoppingCartContext = {
   increase: (product: CartItem) => void;
   decrease: (productDetailId: number) => void;
   removeFromCart: (id: number) => void;
+  removeAllFromCart: () => void;
   cartItems: CartItem[];
   cartQuantity: number;
   cartSum: number;
@@ -94,6 +95,9 @@ const CartProvier = ({ children }: CartProviderProps) => {
       return currItems.filter((item) => item.id !== id);
     });
   };
+  const removeAllFromCart = () => {
+    setCartItems([]);
+  };
 
   return (
     <CartContext.Provider
@@ -102,6 +106,7 @@ const CartProvier = ({ children }: CartProviderProps) => {
         increase,
         decrease,
         removeFromCart,
+        removeAllFromCart,
         cartItems,
         cartQuantity,
         cartSum,
