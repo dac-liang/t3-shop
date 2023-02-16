@@ -1,17 +1,20 @@
-name: workflow run
+---
+name: Test
 
 on:
   workflow_run:
     workflows:
-      - Hello
+      - Preflight
     types:
       - completed
+
 jobs:
-  main:
-    name: main
-    runs-on: ubuntu-20.04
+  test-job:
+    name: Test Step
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
+      - uses: actions/checkout@v2
         with:
-          script: |
-            core.info(JSON.stringify(context.payload))
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - run: git branch
+      - run: env

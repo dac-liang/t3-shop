@@ -1,8 +1,13 @@
-name: Hello
-on: push
+---
+name: Preflight
+
+on:
+  - pull_request
+  - push
 
 jobs:
-  hello:
+  preflight-job:
+    name: Preflight Step
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World!"
+      - run: env
