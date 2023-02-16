@@ -1,19 +1,17 @@
-name: Completed
+name: workflow run
+
 on:
   workflow_run:
     workflows:
       - Hello
     types:
       - completed
-
 jobs:
-  on-success:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  main:
+    name: main
+    runs-on: ubuntu-20.04
     steps:
-      - run: echo 'success'
-  on-failure:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-      - run: echo 'failure'
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            core.info(JSON.stringify(context.payload))
