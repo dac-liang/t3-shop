@@ -5,8 +5,8 @@ on:
   workflow_run:
     workflows:
       - Preflight
-    types:
-      - completed
+    types: [completed]
+    branches: [feat/add_order_page]
 
 jobs:
   test-job:
