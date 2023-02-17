@@ -43,7 +43,8 @@ export const authRouter = router({
             productDetailId: item.id,
           };
         });
-        ctx.prisma.order.create({
+
+        return ctx.prisma.order.create({
           data: {
             total: input.cartSum + input.shippingFee,
             statusId: "ORDERED",

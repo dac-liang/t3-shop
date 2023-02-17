@@ -16,6 +16,9 @@ const AuthShowcase: React.FC = () => {
         {sessionData && <span>{sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
+      <Link className="hover:text-gray-900" href="/order">
+        Order
+      </Link>
       <Link className="hover:text-gray-900" href="/cart">
         Cart
       </Link>
